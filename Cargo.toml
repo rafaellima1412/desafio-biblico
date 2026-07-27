@@ -1,0 +1,19 @@
+[package]
+name = "desafio-biblico"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+axum = { version = "0.7", features = ["json"] }
+tokio = { version = "1", features = ["full"] }
+tower-http = { version = "0.5", features = ["fs", "trace"] }
+askama = { version = "0.12", features = ["with-axum"] }
+askama_axum = "0.4"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tracing = "0.1"
+tracing-subscriber = "0.3"
+
+[profile.release]
+opt-level = "z"   # otimiza pro tamanho do binário, importante no Pi3
+lto = true

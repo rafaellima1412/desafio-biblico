@@ -1,0 +1,105 @@
+:root {
+  --bg: #0f172a;
+  --panel: #1e293b;
+  --accent: #d4af37;
+  --text: #f1f5f9;
+  --muted: #94a3b8;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, sans-serif;
+  background: radial-gradient(circle at top, #1e293b, #0f172a 70%);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  text-align: center;
+  padding: 2rem 1rem 1rem;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 3rem;
+  color: var(--accent);
+  text-shadow: 0 2px 12px rgba(212, 175, 55, 0.4);
+}
+
+.subtitulo {
+  color: var(--muted);
+  font-size: 1.3rem;
+  letter-spacing: .05em;
+}
+
+main {
+  flex: 1;
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1rem 2rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: .8rem;
+}
+
+.vazio {
+  text-align: center;
+  color: var(--muted);
+  font-size: 1.5rem;
+  margin-top: 3rem;
+}
+
+.linha-ranking {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  background: var(--panel);
+  border-radius: 14px;
+  padding: 1rem 1.5rem;
+  border: 1px solid #334155;
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+
+.linha-ranking.top1 { border-color: #f59e0b; box-shadow: 0 0 20px rgba(245, 158, 11, .25); }
+.linha-ranking.top2 { border-color: #cbd5e1; }
+.linha-ranking.top3 { border-color: #b45309; }
+
+.posicao {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--muted);
+  width: 3rem;
+  text-align: center;
+}
+
+.linha-ranking.top1 .posicao,
+.linha-ranking.top2 .posicao,
+.linha-ranking.top3 .posicao {
+  color: var(--text);
+}
+
+.medalha { font-size: 2rem; width: 3rem; text-align: center; }
+
+.nome-jogador {
+  flex: 1;
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.pontos-jogador {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+footer {
+  text-align: center;
+  padding: 1rem;
+  color: var(--muted);
+  font-size: 1rem;
+}

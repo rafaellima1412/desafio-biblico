@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Desafio Bíblico</title>
+  <link rel="stylesheet" href="/static/css/style.css?v={{ versao }}">
+</head>
+<body>
+  <header>
+    <h1>✝️ Desafio Bíblico</h1>
+    <div id="login-box">
+      <input id="player-name" type="text" placeholder="Seu nome" maxlength="20">
+      <button id="btn-entrar">Entrar</button>
+    </div>
+    <div id="score-box" class="hidden">
+      Jogador: <strong id="player-label"></strong> · Pontos: <strong id="score-label">0</strong>
+    </div>
+  </header>
+
+  <div id="trilha-box" class="hidden">
+    <span class="trilha-titulo">🛤️ Trilha:</span>
+    <select id="trilha-select">
+      <option value="">Escolher trilha...</option>
+    </select>
+    <span id="trilha-progresso-label"></span>
+    <div id="trilha-path"></div>
+  </div>
+
+  <main id="game" class="hidden">
+    <section id="inventory-panel">
+      <h2>Elementos</h2>
+      <p class="legenda">
+        <span class="dot base"></span> base
+        <span class="dot descoberto"></span> descoberto
+      </p>
+      <div id="inventory">
+        {% for el in elementos_base %}
+        <button class="elemento base" data-nome="{{ el }}">{{ el }}</button>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section id="workspace-panel">
+      <h2>Área de combinação</h2>
+      <div id="workspace">
+        <div id="slot-a" class="slot">Elemento A</div>
+        <span class="plus">+</span>
+        <div id="slot-b" class="slot">Elemento B</div>
+        <button id="btn-combinar">Combinar</button>
+      </div>
+      <div id="resultado"></div>
+
+      <details id="raridade-helper">
+        <summary>❓ Como funciona a raridade?</summary>
+        <p class="raridade-explicacao">
+          Quanto mais "profunda" a combinação (mais passos até chegar nela), mais rara e mais pontos vale:
+        </p>
+        <ul class="raridade-tabela">
+          <li><span class="badge-raridade raridade-comum">Comum</span> tier 1–2 — 10 pontos</li>
+          <li><span class="badge-raridade raridade-incomum">Incomum</span> tier 3–4 — 20 pontos</li>
+          <li><span class="badge-raridade raridade-raro">Raro</span> tier 5–6 — 35 pontos</li>
+          <li><span class="badge-raridade raridade-epico">Épico</span> tier 7–8 — 50 pontos</li>
+          <li><span class="badge-raridade raridade-lendario">Lendário</span> tier 9–10 — 75 pontos</li>
+          <li><span class="badge-raridade raridade-mitico">Mítico</span> tier 11+ — 100 pontos</li>
+        </ul>
+      </details>
+    </section>
+
+    <section id="ranking-panel">
+      <h2>🏆 Ranking</h2>
+      <ol id="ranking-list"></ol>
+    </section>
+  </main>
+
+  <script src="/static/js/game.js?v={{ versao }}"></script>
+</body>
+</html>

@@ -1,0 +1,1080 @@
+{
+  "elementos_base": [
+    "Casamento",
+    "Cativeiro",
+    "Ciúme",
+    "Coragem",
+    "Cruz",
+    "Descanso",
+    "Desejo",
+    "Deserto",
+    "Desobediência",
+    "Deus",
+    "Egito",
+    "Escravidão",
+    "Espírito",
+    "Espírito Santo",
+    "Estrela",
+    "Faraó",
+    "Fogo",
+    "Fome",
+    "Força",
+    "Fé",
+    "Geração",
+    "Gigante",
+    "Harpa",
+    "Idolatria",
+    "Israel",
+    "Jejum",
+    "Juiz",
+    "Leitura",
+    "Leões",
+    "Manjedoura",
+    "Mar",
+    "Maria",
+    "Medo",
+    "Montanha",
+    "Nuvem",
+    "Obediência",
+    "Oração",
+    "Palavra",
+    "Parte Seca",
+    "Pastor",
+    "Peixe",
+    "Perdão",
+    "Pescador",
+    "Poder",
+    "Promessa",
+    "Riqueza",
+    "Sabedoria",
+    "Sacrifício",
+    "Semente",
+    "Serpente",
+    "Terra Estrangeira",
+    "Traição",
+    "Trevas",
+    "Túmulo Vazio",
+    "Água",
+    "Ódio",
+    "Óleo"
+  ],
+  "combinacoes": [
+    {
+      "id": 40,
+      "combo": [
+        "Fé",
+        "Deserto"
+      ],
+      "result": "Peregrinação",
+      "tier": 3
+    },
+    {
+      "id": 41,
+      "combo": [
+        "Peregrinação",
+        "Promessa"
+      ],
+      "result": "Abraão",
+      "tier": 4
+    },
+    {
+      "id": 42,
+      "combo": [
+        "Abraão",
+        "Sacrifício"
+      ],
+      "result": "Isaque",
+      "tier": 5
+    },
+    {
+      "id": 43,
+      "combo": [
+        "Isaque",
+        "Fé"
+      ],
+      "result": "Jacó",
+      "tier": 5
+    },
+    {
+      "id": 44,
+      "combo": [
+        "Jacó",
+        "Ciúme"
+      ],
+      "result": "José do Egito",
+      "tier": 6
+    },
+    {
+      "id": 45,
+      "combo": [
+        "José do Egito",
+        "Perdão"
+      ],
+      "result": "Reconciliação",
+      "tier": 6
+    },
+    {
+      "id": 50,
+      "combo": [
+        "Egito",
+        "Escravidão"
+      ],
+      "result": "Sofrimento",
+      "tier": 3
+    },
+    {
+      "id": 51,
+      "combo": [
+        "Sofrimento",
+        "Água"
+      ],
+      "result": "Moisés",
+      "tier": 4
+    },
+    {
+      "id": 52,
+      "combo": [
+        "Moisés",
+        "Fogo"
+      ],
+      "result": "Sarça Ardente",
+      "tier": 5
+    },
+    {
+      "id": 53,
+      "combo": [
+        "Sarça Ardente",
+        "Deserto"
+      ],
+      "result": "Chamado",
+      "tier": 5
+    },
+    {
+      "id": 54,
+      "combo": [
+        "Chamado",
+        "Faraó"
+      ],
+      "result": "Pragas",
+      "tier": 6
+    },
+    {
+      "id": 55,
+      "combo": [
+        "Pragas",
+        "Água"
+      ],
+      "result": "Êxodo",
+      "tier": 6
+    },
+    {
+      "id": 56,
+      "combo": [
+        "Êxodo",
+        "Montanha"
+      ],
+      "result": "Dez Mandamentos",
+      "tier": 7
+    },
+    {
+      "id": 60,
+      "combo": [
+        "Pastor",
+        "Obediência"
+      ],
+      "result": "Davi",
+      "tier": 4
+    },
+    {
+      "id": 61,
+      "combo": [
+        "Davi",
+        "Óleo"
+      ],
+      "result": "Ungido",
+      "tier": 4
+    },
+    {
+      "id": 62,
+      "combo": [
+        "Davi",
+        "Gigante"
+      ],
+      "result": "Golias",
+      "tier": 4
+    },
+    {
+      "id": 63,
+      "combo": [
+        "Davi",
+        "Golias"
+      ],
+      "result": "Vitória",
+      "tier": 5
+    },
+    {
+      "id": 64,
+      "combo": [
+        "Davi",
+        "Harpa"
+      ],
+      "result": "Salmos",
+      "tier": 5
+    },
+    {
+      "id": 65,
+      "combo": [
+        "Davi",
+        "Poder"
+      ],
+      "result": "Rei Davi",
+      "tier": 5
+    },
+    {
+      "id": 66,
+      "combo": [
+        "Rei Davi",
+        "Desejo"
+      ],
+      "result": "Betsabé",
+      "tier": 6
+    },
+    {
+      "id": 67,
+      "combo": [
+        "Rei Davi",
+        "Sabedoria"
+      ],
+      "result": "Salomão",
+      "tier": 6
+    },
+    {
+      "id": 68,
+      "combo": [
+        "Salomão",
+        "Riqueza"
+      ],
+      "result": "Templo",
+      "tier": 7
+    },
+    {
+      "id": 69,
+      "combo": [
+        "Salomão",
+        "Idolatria"
+      ],
+      "result": "Reino Dividido",
+      "tier": 7
+    },
+    {
+      "id": 70,
+      "combo": [
+        "Ciúme",
+        "Poder"
+      ],
+      "result": "Saul",
+      "tier": 5
+    },
+    {
+      "id": 80,
+      "combo": [
+        "Oração",
+        "Leitura"
+      ],
+      "result": "Daniel",
+      "tier": 4
+    },
+    {
+      "id": 81,
+      "combo": [
+        "Daniel",
+        "Leões"
+      ],
+      "result": "Cova dos Leões",
+      "tier": 5
+    },
+    {
+      "id": 82,
+      "combo": [
+        "Desobediência",
+        "Mar"
+      ],
+      "result": "Jonas",
+      "tier": 4
+    },
+    {
+      "id": 83,
+      "combo": [
+        "Jonas",
+        "Peixe"
+      ],
+      "result": "Arrependimento",
+      "tier": 5
+    },
+    {
+      "id": 90,
+      "combo": [
+        "Israel",
+        "Desobediência"
+      ],
+      "result": "Opressão",
+      "tier": 3
+    },
+    {
+      "id": 91,
+      "combo": [
+        "Juiz",
+        "Coragem"
+      ],
+      "result": "Débora",
+      "tier": 4
+    },
+    {
+      "id": 92,
+      "combo": [
+        "Juiz",
+        "Medo"
+      ],
+      "result": "Gideão",
+      "tier": 4
+    },
+    {
+      "id": 93,
+      "combo": [
+        "Juiz",
+        "Força"
+      ],
+      "result": "Sansão",
+      "tier": 4
+    },
+    {
+      "id": 94,
+      "combo": [
+        "Sansão",
+        "Traição"
+      ],
+      "result": "Dalila",
+      "tier": 5
+    },
+    {
+      "id": 95,
+      "combo": [
+        "Fome",
+        "Terra Estrangeira"
+      ],
+      "result": "Rute",
+      "tier": 4
+    },
+    {
+      "id": 96,
+      "combo": [
+        "Rute",
+        "Boaz"
+      ],
+      "result": "Redenção",
+      "tier": 5
+    },
+    {
+      "id": 97,
+      "combo": [
+        "Redenção",
+        "Casamento"
+      ],
+      "result": "Obede",
+      "tier": 5
+    },
+    {
+      "id": 100,
+      "combo": [
+        "Jacó",
+        "Geração"
+      ],
+      "result": "Judá",
+      "tier": 5
+    },
+    {
+      "id": 101,
+      "combo": [
+        "Salmom",
+        "Rute"
+      ],
+      "result": "Boaz",
+      "tier": 5
+    },
+    {
+      "id": 102,
+      "combo": [
+        "Boaz",
+        "Geração"
+      ],
+      "result": "Obede",
+      "tier": 6
+    },
+    {
+      "id": 103,
+      "combo": [
+        "Obede",
+        "Geração"
+      ],
+      "result": "Jessé",
+      "tier": 6
+    },
+    {
+      "id": 104,
+      "combo": [
+        "Jessé",
+        "Geração"
+      ],
+      "result": "Davi",
+      "tier": 6
+    },
+    {
+      "id": 105,
+      "combo": [
+        "Jeconias",
+        "Cativeiro"
+      ],
+      "result": "Exílio",
+      "tier": 7
+    },
+    {
+      "id": 106,
+      "combo": [
+        "Matã",
+        "Geração"
+      ],
+      "result": "Jacó (pai de José)",
+      "tier": 8
+    },
+    {
+      "id": 107,
+      "combo": [
+        "Jacó (pai de José)",
+        "Geração"
+      ],
+      "result": "José (esposo de Maria)",
+      "tier": 8
+    },
+    {
+      "id": 108,
+      "combo": [
+        "José (esposo de Maria)",
+        "Maria"
+      ],
+      "result": "Sagrada Família",
+      "tier": 8
+    },
+    {
+      "id": 110,
+      "combo": [
+        "Sagrada Família",
+        "Espírito Santo"
+      ],
+      "result": "Jesus",
+      "tier": 9
+    },
+    {
+      "id": 111,
+      "combo": [
+        "Jesus",
+        "Manjedoura"
+      ],
+      "result": "Nascimento",
+      "tier": 9
+    },
+    {
+      "id": 112,
+      "combo": [
+        "Nascimento",
+        "Estrela"
+      ],
+      "result": "Magos",
+      "tier": 10
+    },
+    {
+      "id": 113,
+      "combo": [
+        "Jesus",
+        "Deserto"
+      ],
+      "result": "Tentação de Jesus",
+      "tier": 10
+    },
+    {
+      "id": 114,
+      "combo": [
+        "Tentação de Jesus",
+        "Jejum"
+      ],
+      "result": "Vitória sobre Satanás",
+      "tier": 10
+    },
+    {
+      "id": 115,
+      "combo": [
+        "Jesus",
+        "Água"
+      ],
+      "result": "Batismo de Jesus",
+      "tier": 10
+    },
+    {
+      "id": 116,
+      "combo": [
+        "Jesus",
+        "Pescador"
+      ],
+      "result": "Discípulo",
+      "tier": 10
+    },
+    {
+      "id": 117,
+      "combo": [
+        "Jesus",
+        "Traição"
+      ],
+      "result": "Judas",
+      "tier": 10
+    },
+    {
+      "id": 118,
+      "combo": [
+        "Jesus",
+        "Cruz"
+      ],
+      "result": "Crucificação",
+      "tier": 11
+    },
+    {
+      "id": 119,
+      "combo": [
+        "Crucificação",
+        "Sacrifício"
+      ],
+      "result": "Redenção da Humanidade",
+      "tier": 11
+    },
+    {
+      "id": 120,
+      "combo": [
+        "Redenção da Humanidade",
+        "Túmulo Vazio"
+      ],
+      "result": "Ressurreição de Jesus",
+      "tier": 12
+    },
+    {
+      "id": 121,
+      "combo": [
+        "Ressurreição de Jesus",
+        "Nuvem"
+      ],
+      "result": "Ascensão",
+      "tier": 12
+    },
+    {
+      "id": 122,
+      "combo": [
+        "Ascensão",
+        "Fogo"
+      ],
+      "result": "Pentecostes",
+      "tier": 13
+    },
+    {
+      "id": 124,
+      "combo": [
+        "Judá",
+        "Geração"
+      ],
+      "result": "Perez",
+      "tier": 8
+    },
+    {
+      "id": 125,
+      "combo": [
+        "Perez",
+        "Geração"
+      ],
+      "result": "Hezrom",
+      "tier": 8
+    },
+    {
+      "id": 126,
+      "combo": [
+        "Hezrom",
+        "Geração"
+      ],
+      "result": "Rão",
+      "tier": 8
+    },
+    {
+      "id": 127,
+      "combo": [
+        "Rão",
+        "Geração"
+      ],
+      "result": "Aminadabe",
+      "tier": 8
+    },
+    {
+      "id": 128,
+      "combo": [
+        "Aminadabe",
+        "Geração"
+      ],
+      "result": "Naassom",
+      "tier": 8
+    },
+    {
+      "id": 129,
+      "combo": [
+        "Naassom",
+        "Geração"
+      ],
+      "result": "Salmom",
+      "tier": 8
+    },
+    {
+      "id": 130,
+      "combo": [
+        "Salomão",
+        "Geração"
+      ],
+      "result": "Roboão",
+      "tier": 8
+    },
+    {
+      "id": 131,
+      "combo": [
+        "Roboão",
+        "Geração"
+      ],
+      "result": "Abias",
+      "tier": 8
+    },
+    {
+      "id": 132,
+      "combo": [
+        "Abias",
+        "Geração"
+      ],
+      "result": "Asa",
+      "tier": 8
+    },
+    {
+      "id": 133,
+      "combo": [
+        "Asa",
+        "Geração"
+      ],
+      "result": "Josafá",
+      "tier": 8
+    },
+    {
+      "id": 134,
+      "combo": [
+        "Josafá",
+        "Geração"
+      ],
+      "result": "Jorão",
+      "tier": 8
+    },
+    {
+      "id": 135,
+      "combo": [
+        "Jorão",
+        "Geração"
+      ],
+      "result": "Uzias",
+      "tier": 8
+    },
+    {
+      "id": 136,
+      "combo": [
+        "Uzias",
+        "Geração"
+      ],
+      "result": "Jotão",
+      "tier": 8
+    },
+    {
+      "id": 137,
+      "combo": [
+        "Jotão",
+        "Geração"
+      ],
+      "result": "Acaz",
+      "tier": 8
+    },
+    {
+      "id": 138,
+      "combo": [
+        "Acaz",
+        "Geração"
+      ],
+      "result": "Ezequias",
+      "tier": 8
+    },
+    {
+      "id": 139,
+      "combo": [
+        "Ezequias",
+        "Geração"
+      ],
+      "result": "Manassés",
+      "tier": 8
+    },
+    {
+      "id": 140,
+      "combo": [
+        "Manassés",
+        "Geração"
+      ],
+      "result": "Amom",
+      "tier": 8
+    },
+    {
+      "id": 141,
+      "combo": [
+        "Amom",
+        "Geração"
+      ],
+      "result": "Josias",
+      "tier": 8
+    },
+    {
+      "id": 142,
+      "combo": [
+        "Josias",
+        "Geração"
+      ],
+      "result": "Jeconias",
+      "tier": 8
+    },
+    {
+      "id": 143,
+      "combo": [
+        "Exílio",
+        "Geração"
+      ],
+      "result": "Salatiel",
+      "tier": 8
+    },
+    {
+      "id": 144,
+      "combo": [
+        "Salatiel",
+        "Geração"
+      ],
+      "result": "Zorobabel",
+      "tier": 8
+    },
+    {
+      "id": 145,
+      "combo": [
+        "Zorobabel",
+        "Geração"
+      ],
+      "result": "Abiúde",
+      "tier": 8
+    },
+    {
+      "id": 146,
+      "combo": [
+        "Abiúde",
+        "Geração"
+      ],
+      "result": "Eliaquim",
+      "tier": 8
+    },
+    {
+      "id": 147,
+      "combo": [
+        "Eliaquim",
+        "Geração"
+      ],
+      "result": "Azor",
+      "tier": 8
+    },
+    {
+      "id": 148,
+      "combo": [
+        "Azor",
+        "Geração"
+      ],
+      "result": "Sadoque",
+      "tier": 8
+    },
+    {
+      "id": 149,
+      "combo": [
+        "Sadoque",
+        "Geração"
+      ],
+      "result": "Aquim",
+      "tier": 8
+    },
+    {
+      "id": 150,
+      "combo": [
+        "Aquim",
+        "Geração"
+      ],
+      "result": "Eliúde",
+      "tier": 8
+    },
+    {
+      "id": 151,
+      "combo": [
+        "Eliúde",
+        "Geração"
+      ],
+      "result": "Eleazar",
+      "tier": 8
+    },
+    {
+      "id": 152,
+      "combo": [
+        "Eleazar",
+        "Geração"
+      ],
+      "result": "Matã",
+      "tier": 8
+    },
+    {
+      "id": 200,
+      "combo": [
+        "Trevas",
+        "Água"
+      ],
+      "result": "Luz",
+      "tier": 1
+    },
+    {
+      "id": 201,
+      "combo": [
+        "Trevas",
+        "Palavra"
+      ],
+      "result": "Noite",
+      "tier": 1
+    },
+    {
+      "id": 202,
+      "combo": [
+        "Água",
+        "Espírito"
+      ],
+      "result": "Céu",
+      "tier": 1
+    },
+    {
+      "id": 203,
+      "combo": [
+        "Parte Seca",
+        "Palavra"
+      ],
+      "result": "Terra",
+      "tier": 1
+    },
+    {
+      "id": 204,
+      "combo": [
+        "Água",
+        "Palavra"
+      ],
+      "result": "Peixes",
+      "tier": 1
+    },
+    {
+      "id": 205,
+      "combo": [
+        "Luz",
+        "Palavra"
+      ],
+      "result": "Dia",
+      "tier": 2
+    },
+    {
+      "id": 206,
+      "combo": [
+        "Terra",
+        "Semente"
+      ],
+      "result": "Árvores",
+      "tier": 2
+    },
+    {
+      "id": 207,
+      "combo": [
+        "Terra",
+        "Palavra"
+      ],
+      "result": "Animais",
+      "tier": 2
+    },
+    {
+      "id": 208,
+      "combo": [
+        "Água",
+        "Terra"
+      ],
+      "result": "Barro",
+      "tier": 2
+    },
+    {
+      "id": 209,
+      "combo": [
+        "Céu",
+        "Palavra"
+      ],
+      "result": "Aves",
+      "tier": 2
+    },
+    {
+      "id": 210,
+      "combo": [
+        "Noite",
+        "Céu"
+      ],
+      "result": "Lua",
+      "tier": 2
+    },
+    {
+      "id": 211,
+      "combo": [
+        "Dia",
+        "Céu"
+      ],
+      "result": "Sol",
+      "tier": 3
+    },
+    {
+      "id": 212,
+      "combo": [
+        "Serpente",
+        "Árvores"
+      ],
+      "result": "Tentação",
+      "tier": 3
+    },
+    {
+      "id": 213,
+      "combo": [
+        "Barro",
+        "Espírito"
+      ],
+      "result": "Adão",
+      "tier": 3
+    },
+    {
+      "id": 214,
+      "combo": [
+        "Sol",
+        "Palavra"
+      ],
+      "result": "Estrelas",
+      "tier": 4
+    },
+    {
+      "id": 215,
+      "combo": [
+        "Tentação",
+        "Desobediência"
+      ],
+      "result": "Pecado",
+      "tier": 4
+    },
+    {
+      "id": 216,
+      "combo": [
+        "Adão",
+        "Noite"
+      ],
+      "result": "Sono",
+      "tier": 4
+    },
+    {
+      "id": 217,
+      "combo": [
+        "Adão",
+        "Sono"
+      ],
+      "result": "Costela",
+      "tier": 5
+    },
+    {
+      "id": 218,
+      "combo": [
+        "Costela",
+        "Espírito"
+      ],
+      "result": "Eva",
+      "tier": 6
+    },
+    {
+      "id": 219,
+      "combo": [
+        "Adão",
+        "Eva"
+      ],
+      "result": "Humanidade",
+      "tier": 7
+    },
+    {
+      "id": 220,
+      "combo": [
+        "Humanidade",
+        "Deus"
+      ],
+      "result": "Éden",
+      "tier": 8
+    },
+    {
+      "id": 221,
+      "combo": [
+        "Humanidade",
+        "Pecado"
+      ],
+      "result": "Expulsão",
+      "tier": 8
+    },
+    {
+      "id": 222,
+      "combo": [
+        "Obediência",
+        "Humanidade"
+      ],
+      "result": "Abel",
+      "tier": 8
+    },
+    {
+      "id": 223,
+      "combo": [
+        "Ódio",
+        "Humanidade"
+      ],
+      "result": "Caim",
+      "tier": 8
+    },
+    {
+      "id": 224,
+      "combo": [
+        "Caim",
+        "Abel"
+      ],
+      "result": "Homicídio",
+      "tier": 9
+    },
+    {
+      "id": 225,
+      "combo": [
+        "Humanidade",
+        "Descanso"
+      ],
+      "result": "Sábado",
+      "tier": 8
+    }
+  ]
+}
