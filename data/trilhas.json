@@ -1,69 +1,31 @@
 {
   "trilhas": [
     {
-      "id": "genesis",
-      "nome": "Gênesis 1 a 4 — A Criação",
+      "id": "tentacao",
+      "nome": "Mateus 4 — A Tentação de Jesus",
       "elementos": [
-        "Luz", "Dia", "Noite", "Céu", "Terra", "Árvores", "Sol", "Lua",
-        "Estrelas", "Aves", "Animais", "Peixes", "Barro", "Adão", "Sono",
-        "Costela", "Eva", "Humanidade", "Éden", "Tentação", "Pecado",
-        "Expulsão", "Abel", "Caim", "Homicídio"
-      ]
-    },
-    {
-      "id": "patriarcas",
-      "nome": "Patriarcas — De Abraão a José",
-      "elementos": [
-        "Peregrinação", "Abraão", "Isaque", "Jacó", "Judá",
-        "José do Egito", "Reconciliação"
-      ]
-    },
-    {
-      "id": "exodo",
-      "nome": "Êxodo — A Libertação",
-      "elementos": [
-        "Sofrimento", "Moisés", "Sarça Ardente", "Chamado",
-        "Pragas", "Êxodo", "Dez Mandamentos"
-      ]
-    },
-    {
-      "id": "juizes",
-      "nome": "Juízes — Heróis Inesperados",
-      "elementos": [
-        "Opressão", "Débora", "Gideão", "Golias", "Sansão",
-        "Dalila", "Rute", "Redenção"
-      ]
-    },
-    {
-      "id": "reis",
-      "nome": "Reis de Israel",
-      "elementos": [
-        "Davi", "Golias", "Vitória", "Salmos", "Rei Davi",
-        "Betsabé", "Salomão", "Templo", "Reino Dividido", "Saul"
-      ]
-    },
-    {
-      "id": "genealogia",
-      "nome": "Genealogia — A Linhagem do Messias",
-      "elementos": [
-        "Judá", "Perez", "Hezrom", "Rão", "Aminadabe", "Naassom",
-        "Salmom", "Boaz", "Obede", "Jessé", "Davi", "Salomão",
-        "Roboão", "Abias", "Asa", "Josafá", "Jorão", "Uzias",
-        "Jotão", "Acaz", "Ezequias", "Manassés", "Amom", "Josias",
-        "Jeconias", "Exílio", "Salatiel", "Zorobabel", "Abiúde",
-        "Eliaquim", "Azor", "Sadoque", "Aquim", "Eliúde", "Eleazar",
-        "Matã", "Jacó (pai de José)", "José (esposo de Maria)",
-        "Sagrada Família", "Jesus"
-      ]
-    },
-    {
-      "id": "evangelhos",
-      "nome": "Evangelhos — A Vida de Jesus",
-      "elementos": [
-        "Jesus", "Nascimento", "Magos", "Tentação de Jesus",
-        "Vitória sobre Satanás", "Batismo de Jesus", "Discípulo",
-        "Judas", "Crucificação", "Redenção da Humanidade",
-        "Ressurreição de Jesus", "Ascensão", "Pentecostes"
+        "Jesus",
+        "Pedras",
+        "Pão",
+        "Palavra",
+        "Templo",
+        "Anjos",
+        "Montanha",
+        "Reinos",
+        "Adoração",
+        "Serviço",
+        "Deserto",
+        "Jejum",
+        "Satanás",
+        "Fome",
+        "Tentação de Jesus",
+        "Tentação do Pão",
+        "Nem só de pão viverá o homem",
+        "Não tentarás o Senhor teu Deus",
+        "Glória dos Reinos do Mundo",
+        "Tentação de Poder",
+        "Somente a Deus servirás",
+        "Vitória sobre Satanás"
       ]
     }
   ]

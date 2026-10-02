@@ -91,7 +91,7 @@ $("#btn-combinar").addEventListener("click", async () => {
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, ""); // remove acentos só pra formar a classe CSS
       el.innerHTML = `✨ Descoberta! ${a} + ${b} = <strong>${data.result}</strong> ` +
-        `<span class="badge-raridade raridade-${slug}">${data.raridade}</span> ` +
+        `<span class="badge-raridade raridade-${data.raridade_id}">${data.raridade}</span> ` +
         `(+${data.pontos_ganhos} pontos)`;
     } else {
       el.textContent = `${a} + ${b} = ${data.result} (já descoberto)`;

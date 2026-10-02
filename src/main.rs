@@ -1,6 +1,7 @@
 use axum::{
-    extract::{Json, Query, State},
-    response::IntoResponse,
+    extract::{DefaultBodyLimit, Json, Query, State},
+    http::StatusCode,
+    response::{IntoResponse, Response},
     routing::{get, post},
     Router,
 };
@@ -12,9 +13,18 @@ use tower_http::services::ServeDir;
 mod templates;
 use templates::{IndexTemplate, TelaoTemplate};
 
+// ---- Limites de proteção (jogo exposto na internet via DDNS) ----
+// Tamanho máximo do nome do jogador (em caracteres).
+const MAX_NOME_JOGADOR: usize = 24;
+// Máximo de jogadores simultâneos guardados em memória (o Pi3 tem só 1GB).
+const MAX_JOGADORES: usize = 50;
+// Tamanho máximo do corpo de uma requisição POST.
+const MAX_BODY_BYTES: usize = 4 * 1024;
+
 // combos.json usa array [a, b]; fazemos a conversão manual no load.
 #[derive(Debug, Deserialize)]
 struct RawComboEntry {
+    #[allow(dead_code)]
     id: u32,
     combo: [String; 2],
     result: String,
@@ -45,8 +55,8 @@ struct TrilhasFile {
 }
 
 fn load_trilhas() -> Vec<Trilha> {
-    let raw = std::fs::read_to_string("data/trilhas.json")
-        .expect("não consegui ler data/trilhas.json");
+    let raw =
+        std::fs::read_to_string("data/trilhas.json").expect("não consegui ler data/trilhas.json");
     let parsed: TrilhasFile = serde_json::from_str(&raw).expect("JSON inválido em trilhas.json");
     parsed.trilhas
 }
@@ -87,7 +97,7 @@ fn calcular_base_de_cada_trilha(
     }
 }
 
-// Estado do jogo, tudo em memória (suficiente pro volume de uma intranet local)
+// Estado do jogo, tudo em memória (suficiente pro volume de um evento)
 struct AppState {
     // chave normalizada "A|B" (ordem alfabética) -> (resultado, tier)
     lookup: HashMap<String, (String, u32)>,
@@ -108,13 +118,31 @@ fn normalize_key(a: &str, b: &str) -> String {
     format!("{}|{}", pair[0], pair[1])
 }
 
+// Valida e limpa o nome do jogador. Aceita letras (com acento), números,
+// espaço, hífen, underscore e ponto. Rejeita qualquer coisa como < > & " '
+// pra impedir injeção de HTML/JS no ranking e no telão.
+fn validar_nome(raw: &str) -> Option<String> {
+    let nome = raw.trim();
+    if nome.is_empty() || nome.chars().count() > MAX_NOME_JOGADOR {
+        return None;
+    }
+    let ok = nome
+        .chars()
+        .all(|c| c.is_alphanumeric() || matches!(c, ' ' | '-' | '_' | '.'));
+    if ok {
+        Some(nome.to_string())
+    } else {
+        None
+    }
+}
+
 fn load_combos() -> (
     HashMap<String, (String, u32)>,
     HashMap<String, (String, String)>,
     Vec<String>,
 ) {
-    let raw = std::fs::read_to_string("data/combos.json")
-        .expect("não consegui ler data/combos.json");
+    let raw =
+        std::fs::read_to_string("data/combos.json").expect("não consegui ler data/combos.json");
     let parsed: ComboFile = serde_json::from_str(&raw).expect("JSON inválido em combos.json");
 
     let mut lookup = HashMap::new();
@@ -132,14 +160,14 @@ fn load_combos() -> (
 
 // Quanto mais alto o tier (mais "profunda" a combinação na árvore),
 // mais rara e mais pontos vale a descoberta.
-fn raridade_info(tier: u32) -> (&'static str, u32) {
+fn raridade_info(tier: u32) -> (&'static str, &'static str, u32) {
     match tier {
-        0..=2 => ("Comum", 10),
-        3..=4 => ("Incomum", 20),
-        5..=6 => ("Raro", 35),
-        7..=8 => ("Épico", 50),
-        9..=10 => ("Lendário", 75),
-        _ => ("Mítico", 100),
+        0..=2 => ("comum", "Leitor da Bíblia", 10),
+        3..=4 => ("incomum", "Aprendiz de Profeta", 20),
+        5..=6 => ("raro", "Carruagem de Fogo", 35),
+        7..=8 => ("epico", "Matador de Gigante", 50),
+        9..=10 => ("lendario", "Labareda de Fogo", 75),
+        _ => ("mitico", "Manto da Revelação", 100),
     }
 }
 
@@ -161,36 +189,49 @@ struct CombineResponse {
     pontos: u32,        // total acumulado do jogador
 }
 
-async fn combine(
-    State(state): State<Arc<AppState>>,
-    Json(req): Json<CombineRequest>,
-) -> impl IntoResponse {
+fn combine_falha() -> CombineResponse {
+    CombineResponse {
+        success: false,
+        result: None,
+        novo: false,
+        tier: None,
+        raridade: None,
+        pontos_ganhos: 0,
+        pontos: 0,
+    }
+}
+
+async fn combine(State(state): State<Arc<AppState>>, Json(req): Json<CombineRequest>) -> Response {
+    // Nome inválido: devolve o mesmo formato JSON de falha (com status 400)
+    // pra não quebrar o front, que sempre espera um CombineResponse.
+    let Some(player) = validar_nome(&req.player) else {
+        return (StatusCode::BAD_REQUEST, Json(combine_falha())).into_response();
+    };
+
     let key = normalize_key(&req.a, &req.b);
 
     let Some((result, tier)) = state.lookup.get(&key).cloned() else {
-        return Json(CombineResponse {
-            success: false,
-            result: None,
-            novo: false,
-            tier: None,
-            raridade: None,
-            pontos_ganhos: 0,
-            pontos: 0,
-        });
+        return Json(combine_falha()).into_response();
     };
 
-    let (raridade, pontos_por_raridade) = raridade_info(tier);
+    let (_alias, raridade, pontos_por_raridade) = raridade_info(tier);
 
     let mut players = state.players.lock().unwrap();
-    let discovered = players.entry(req.player.clone()).or_default();
+
+    // Limite de jogadores em memória: só bloqueia NOVOS nomes.
+    if !players.contains_key(&player) && players.len() >= MAX_JOGADORES {
+        return (StatusCode::SERVICE_UNAVAILABLE, Json(combine_falha())).into_response();
+    }
+
+    let discovered = players.entry(player.clone()).or_default();
     let novo = discovered.insert(result.clone());
 
     let pontos_ganhos = if novo { pontos_por_raridade } else { 0 };
     if novo {
         let mut scores = state.scores.lock().unwrap();
-        *scores.entry(req.player.clone()).or_insert(0) += pontos_ganhos;
+        *scores.entry(player.clone()).or_insert(0) += pontos_ganhos;
     }
-    let total = *state.scores.lock().unwrap().get(&req.player).unwrap_or(&0);
+    let total = *state.scores.lock().unwrap().get(&player).unwrap_or(&0);
 
     Json(CombineResponse {
         success: true,
@@ -201,6 +242,7 @@ async fn combine(
         pontos_ganhos,
         pontos: total,
     })
+    .into_response()
 }
 
 #[derive(Serialize)]
@@ -283,10 +325,8 @@ async fn progresso(
     Query(q): Query<PlayerQuery>,
 ) -> impl IntoResponse {
     let players = state.players.lock().unwrap();
-    let descobertos_do_jogador: HashSet<String> = players
-        .get(&q.player)
-        .cloned()
-        .unwrap_or_default();
+    let descobertos_do_jogador: HashSet<String> =
+        players.get(&q.player).cloned().unwrap_or_default();
 
     let trilhas_progresso: Vec<TrilhaProgresso> = state
         .trilhas
@@ -352,12 +392,17 @@ async fn main() {
         .route("/api/inventario", get(inventario))
         .route("/api/progresso", get(progresso))
         .nest_service("/static", ServeDir::new("static"))
+        // Corpo de requisição limitado (o JSON do jogo tem poucas dezenas de bytes)
+        .layer(DefaultBodyLimit::max(MAX_BODY_BYTES))
         .with_state(state);
 
-    // 0.0.0.0 pra ficar acessível pelos celulares conectados na rede do Pi3
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:8080")
+    // Endereço configurável por variável de ambiente BIND_ADDR.
+    // Padrão: 0.0.0.0:8080 (acessível na rede local e pelo redirecionamento de porta).
+    // Se colocar um proxy (Caddy) na frente, use BIND_ADDR=127.0.0.1:8080.
+    let addr = std::env::var("BIND_ADDR").unwrap_or_else(|_| "0.0.0.0:8080".to_string());
+    let listener = tokio::net::TcpListener::bind(&addr)
         .await
-        .expect("não consegui abrir a porta 8080");
-    tracing::info!("Servidor rodando em http://0.0.0.0:8080");
+        .unwrap_or_else(|e| panic!("não consegui abrir {}: {}", addr, e));
+    tracing::info!("Servidor rodando em http://{}", addr);
     axum::serve(listener, app).await.unwrap();
 }
