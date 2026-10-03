@@ -102,6 +102,10 @@ $("#btn-combinar").addEventListener("click", async () => {
     if (data.novo && trilhaAtual) {
       await renderizarTrilha(trilhaAtual);
     }
+    // toda descoberta nova pode ter fechado uma trilha (mesmo sem trilha selecionada)
+    if (data.novo) {
+      await verificarTrilhasConcluidas();
+    }
   }
 
   selecionados = [];
@@ -217,3 +221,224 @@ async function atualizarRanking() {
 setInterval(() => {
   if (player) atualizarRanking();
 }, 5000); // atualiza ranking em tempo quase-real, bom pro telão da igreja
+
+// =====================================================================
+// Animação de trilha concluída
+// =====================================================================
+
+// id da trilha -> função da animação. Trilhas sem entrada aqui não animam
+// (evita mostrar a cena de Mateus 4 quando outra trilha for concluída).
+const ANIMACOES_TRILHA = {
+  tentacao: animacaoTentacao,
+};
+
+// Toca uma vez por jogador e por trilha, guardado no navegador.
+function chaveVitoria(trilhaId) {
+  return `vitoria:${player}:${trilhaId}`;
+}
+function jaMostrouVitoria(trilhaId) {
+  try {
+    return localStorage.getItem(chaveVitoria(trilhaId)) === "1";
+  } catch (e) {
+    return false;
+  }
+}
+function marcarVitoriaMostrada(trilhaId) {
+  try {
+    localStorage.setItem(chaveVitoria(trilhaId), "1");
+  } catch (e) {
+    // navegador sem storage: a animação pode repetir, sem outro efeito
+  }
+}
+
+async function verificarTrilhasConcluidas() {
+  try {
+    const resp = await fetch(`/api/progresso?player=${encodeURIComponent(player)}`);
+    const trilhas = await resp.json();
+    const concluida = trilhas.find(
+      (t) =>
+        t.total > 0 &&
+        t.descobertos === t.total &&
+        ANIMACOES_TRILHA[t.id] &&
+        !jaMostrouVitoria(t.id)
+    );
+    if (concluida) {
+      marcarVitoriaMostrada(concluida.id);
+      await ANIMACOES_TRILHA[concluida.id]();
+    }
+  } catch (e) {
+    console.error("Falha ao verificar trilhas concluídas:", e);
+  }
+}
+
+// CSS da cena, injetado uma vez (não precisa mexer no style.css)
+function injetarEstiloVitoria() {
+  if (document.getElementById("vitoria-style")) return;
+  const s = document.createElement("style");
+  s.id = "vitoria-style";
+  s.textContent = `
+.vitoria-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;padding:16px}
+.vitoria-cena{position:relative;width:min(640px,100%);height:340px;background:#14121c;border-radius:12px;overflow:hidden;font-family:monospace}
+.vitoria-chao{position:absolute;left:0;right:0;bottom:40px;height:8px;background:#2a2638}
+.vitoria-spr{position:absolute;bottom:48px;width:min(128px,26vw);height:auto;image-rendering:pixelated}
+.vitoria-tentador{filter:drop-shadow(2px 0 0 #b3262e) drop-shadow(-2px 0 0 #b3262e) drop-shadow(0 2px 0 #b3262e) drop-shadow(0 -2px 0 #b3262e)}
+.vitoria-fala{position:absolute;left:0;right:0;text-align:center;color:#fff;opacity:0;padding:0 12px}
+.vitoria-px{position:absolute;width:6px;height:6px}
+.vitoria-fechar{position:absolute;left:50%;bottom:6px;transform:translateX(-50%);opacity:0;pointer-events:none;font-family:monospace;font-size:16px;padding:6px 18px;background:#ebd515;color:#14121c;border:none;border-radius:4px;cursor:pointer}
+`;
+  document.head.appendChild(s);
+}
+
+// Cena de Mateus 4: Jesus avança, "Vai-te, Satanás!" (v.10),
+// o tentador foge e caem brilhos lembrando os anjos (v.11).
+async function animacaoTentacao() {
+  injetarEstiloVitoria();
+
+  const overlay = document.createElement("div");
+  overlay.className = "vitoria-overlay";
+  overlay.setAttribute("role", "dialog");
+  overlay.setAttribute("aria-label", "Trilha concluída");
+  overlay.innerHTML = `
+    <div class="vitoria-cena">
+      <div class="vitoria-chao"></div>
+      <img class="vitoria-spr" src="/static/img/jesus.svg" alt="Jesus" style="left:14%">
+      <img class="vitoria-spr vitoria-tentador" src="/static/img/tentador.svg" alt="Tentador" style="left:62%">
+      <div class="vitoria-fala" style="top:36px;font-size:22px">"Vai-te, Satanás!"</div>
+      <div class="vitoria-fala" style="top:70px;font-size:13px;color:#c9c2ab">Mt 4:10</div>
+      <div class="vitoria-fala" style="top:110px;font-size:20px;color:#ebd515">Trilha concluída!</div>
+      <button class="vitoria-fechar" type="button">Fechar</button>
+    </div>`;
+  document.body.appendChild(overlay);
+
+  const cena = overlay.querySelector(".vitoria-cena");
+  const [jesus, tentador] = overlay.querySelectorAll(".vitoria-spr");
+  const [fala, ref, fim] = overlay.querySelectorAll(".vitoria-fala");
+  const btnFechar = overlay.querySelector(".vitoria-fechar");
+
+  const timers = [];
+  const at = (ms, fn) => timers.push(setTimeout(fn, ms));
+  const onKey = (e) => {
+    if (e.key === "Escape") fechar();
+  };
+  function fechar() {
+    timers.forEach(clearTimeout);
+    document.removeEventListener("keydown", onKey);
+    overlay.remove();
+  }
+  document.addEventListener("keydown", onKey);
+  btnFechar.addEventListener("click", fechar);
+
+  // espera os sprites carregarem antes de começar
+  await Promise.all([jesus, tentador].map((img) => img.decode().catch(() => {})));
+
+  const aparece = (el) =>
+    el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 300, fill: "forwards" });
+  const some = (el, delay) =>
+    el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 400, delay, fill: "forwards" });
+
+  // quadradinhos (fumaça e brilhos) que somem ao fim da animação
+  function particula(cor, left, top, frames, duracao, delay) {
+    const p = document.createElement("div");
+    p.className = "vitoria-px";
+    p.style.background = cor;
+    p.style.left = left;
+    p.style.top = top;
+    cena.appendChild(p);
+    p.animate(frames, { duration: duracao, delay, easing: "steps(8)", fill: "forwards" });
+  }
+
+  // o tentador fica do lado direito, então começa espelhado encarando Jesus
+  tentador.style.transform = "scaleX(-1)";
+  cena.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 500, fill: "forwards" });
+
+  // 1) Jesus avança em passos
+  at(600, () =>
+    jesus.animate(
+      [
+        { transform: "translate(0,0)" },
+        { transform: "translate(20px,-6px)" },
+        { transform: "translate(40px,0)" },
+        { transform: "translate(60px,-6px)" },
+        { transform: "translate(80px,0)" },
+      ],
+      { duration: 900, easing: "steps(4)", fill: "forwards" }
+    )
+  );
+
+  // 2) fala com a referência
+  at(1500, () => {
+    aparece(fala);
+    aparece(ref);
+  });
+
+  // 3) o tentador treme
+  at(2000, () =>
+    tentador.animate(
+      [
+        { transform: "scaleX(-1) translateX(0)" },
+        { transform: "scaleX(-1) translateX(-6px)" },
+        { transform: "scaleX(-1) translateX(6px)" },
+        { transform: "scaleX(-1) translateX(0)" },
+      ],
+      { duration: 150, iterations: 4 }
+    )
+  );
+
+  // 4) fumaça e fuga para a direita
+  at(2700, () => {
+    const x = tentador.offsetLeft;
+    const y = tentador.offsetTop;
+    for (let i = 0; i < 14; i++) {
+      particula(
+        i % 2 ? "#6b6478" : "#3d3848",
+        `${x + 40 + Math.random() * 50}px`,
+        `${y + 60 + Math.random() * 60}px`,
+        [
+          { transform: "translate(0,0)", opacity: 1 },
+          { transform: `translate(${(Math.random() - 0.5) * 60}px,${-40 - Math.random() * 50}px)`, opacity: 0 },
+        ],
+        900 + Math.random() * 400,
+        0
+      );
+    }
+    tentador.animate(
+      [
+        { transform: "scaleX(1) translateX(0)", opacity: 1 },
+        { transform: "scaleX(1) translateX(320px)", opacity: 0 },
+      ],
+      { duration: 800, easing: "steps(8)", fill: "forwards" }
+    );
+    some(fala, 600);
+    some(ref, 600);
+  });
+
+  // 5) brilhos caindo (anjos, v.11)
+  at(3600, () => {
+    for (let i = 0; i < 22; i++) {
+      particula(
+        i % 3 ? "#ebd515" : "#fefeff",
+        `${Math.random() * 95}%`,
+        "-10px",
+        [
+          { transform: "translateY(0)", opacity: 1 },
+          { transform: "translateY(300px)", opacity: 0 },
+        ],
+        1400 + Math.random() * 900,
+        Math.random() * 700
+      );
+    }
+  });
+
+  // 6) "Trilha concluída!" e botão Fechar
+  at(4300, () => {
+    fim.animate(
+      [
+        { opacity: 0, transform: "scale(0.8)" },
+        { opacity: 1, transform: "scale(1)" },
+      ],
+      { duration: 400, easing: "steps(4)", fill: "forwards" }
+    );
+    btnFechar.style.pointerEvents = "auto";
+    aparece(btnFechar);
+  });
+}

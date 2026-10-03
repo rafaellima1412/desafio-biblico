@@ -197,36 +197,12 @@ struct Raridade {
 
 fn raridade_info(tier: u32) -> Raridade {
     match tier {
-        0..=2 => Raridade {
-            id: "comum",
-            nome: "Leitor da Bíblia",
-            pontos: 10,
-        },
-        3..=4 => Raridade {
-            id: "incomum",
-            nome: "Aprendiz de Profeta",
-            pontos: 20,
-        },
-        5..=6 => Raridade {
-            id: "raro",
-            nome: "FireGod",
-            pontos: 35,
-        },
-        7..=8 => Raridade {
-            id: "epico",
-            nome: "Matador de Gigante",
-            pontos: 50,
-        },
-        9..=10 => Raridade {
-            id: "lendario",
-            nome: "Labareda de Fogo",
-            pontos: 75,
-        },
-        _ => Raridade {
-            id: "mitico",
-            nome: "Manto da Revelação",
-            pontos: 100,
-        },
+        0..=2 => Raridade { id: "comum", nome: "Leitor da Bíblia", pontos: 10 },
+        3..=4 => Raridade { id: "incomum", nome: "Aprendiz de Profeta", pontos: 20 },
+        5..=6 => Raridade { id: "raro", nome: "Carruagem de Fogo", pontos: 35 },
+        7..=8 => Raridade { id: "epico", nome: "Matador de Gigante", pontos: 50 },
+        9..=10 => Raridade { id: "lendario", nome: "Labareda de Fogo", pontos: 75 },
+        _ => Raridade { id: "mitico", nome: "Manto da Revelação", pontos: 100 },
     }
 }
 
@@ -406,11 +382,7 @@ async fn progresso(
                     TrilhaProgressoItem {
                         nome: el.clone(),
                         descoberto,
-                        dica: if descoberto {
-                            None
-                        } else {
-                            t.dicas.get(el).cloned()
-                        },
+                        dica: if descoberto { None } else { t.dicas.get(el).cloned() },
                     }
                 })
                 .collect();
