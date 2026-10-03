@@ -1,112 +1,116 @@
 {
   "elementos_base": [
+     "Jesus",
     "Espirito",
+    "Deserto",
+    "Jejum",
+    "Satanás",
     "Pedras",
-    "Pão",
+    "Escrituras Distorcidas",
     "Palavra",
     "Templo",
-    "Anjos",
-    "Montanha",
+    "Cidade Santa",
+    "Monte",
     "Reinos",
-    "Adoração",
-    "Satanás"
+    "Expulsou Satanás",
+    "Chegada dos Anjos"
   ],
   "combinacoes": [
     {
       "id": 1,
       "combo": [
-        "Pedras",
-        "Montanha"
+        "Espirito",
+        "Deserto"
       ],
-      "result": "Deserto",
+      "result": "Tentação",
       "tier": 1
     },
     {
       "id": 2,
       "combo": [
-        "Fome",
-        "Adoração"
+        "40 Dias e 40 Noites",
+        "Jejum"
       ],
-      "result": "Jejum",
-      "tier": 1
+      "result": "Fome",
+      "tier": 7
     },
     {
       "id": 3,
       "combo": [
         "Deserto",
-        "Espirito"
+        "Jesus"
       ],
-      "result": "Jesus",
-      "tier": 2
+      "result": "40 Dias e 40 Noites",
+      "tier": 6
     },
     {
       "id": 4,
       "combo": [
-        "Deserto",
-        "Jejum"
+        "Satanás",
+        "Escrituras Distorcidas"
       ],
-      "result": "Fome",
-      "tier": 3
+      "result": "Tentação na Palavra",
+      "tier": 4
     },
     {
       "id": 5,
       "combo": [
-        "Jesus",
-        "Deserto"
+        "Satanás",
+        "Pedras"
       ],
-      "result": "Tentação de Jesus",
-      "tier": 4
+      "result": "Tentação dos Pães",
+      "tier": 1
     },
     {
       "id": 6,
       "combo": [
-        "Fome",
-        "Pedras"
-      ],
-      "result": "Tentação do Pão",
-      "tier": 5
-    },
-    {
-      "id": 7,
-      "combo": [
-        "Montanha",
-        "Reinos"
-      ],
-      "result": "Glória dos Reinos do Mundo",
-      "tier": 5
-    },
-    {
-      "id": 8,
-      "combo": [
-        "Reinos",
-        "Adoração"
-      ],
-      "result": "Tentação de Poder",
-      "tier": 6
-    },
-    {
-      "id": 9,
-      "combo": [
-        "Tentação do Pão",
-        "Palavra"
+        "Tentação dos Pães",
+        "Jesus"
       ],
       "result": "Nem só de pão viverá o homem",
       "tier": 7
     },
     {
-      "id": 10,
+      "id": 7,
       "combo": [
         "Templo",
-        "Anjos"
+        "Cidade Santa"
+      ],
+      "result": "Pináculo",
+      "tier": 2
+    },
+    {
+      "id": 8,
+      "combo": [
+        "Pináculo",
+        "Escrituras Distorcidas"
+      ],
+      "result": "Tentação de Poder",
+      "tier": 8
+    },
+    {
+      "id": 9,
+      "combo": [
+        "Jesus",
+        "Tentação de Poder"
       ],
       "result": "Não tentarás o Senhor teu Deus",
-      "tier": 7
+      "tier": 9
+    },
+    {
+      "id": 10,
+      "combo": [
+        "Monte",
+        "Reinos"
+      ],
+      "result": "Tentação dos Reinos",
+      "tier": 5
     },
     {
       "id": 11,
       "combo": [
-        "Adoração",
-        "Serviço"
+        "Tentação dos Reinos",
+        "Pináculo"
       ],
       "result": "Somente a Deus servirás",
       "tier": 8
@@ -114,26 +118,17 @@
     {
       "id": 12,
       "combo": [
-        "Nem só de pão viverá o homem",
-        "Não tentarás o Senhor teu Deus"
+        "Expulsou Satanás",
+        "Jesus"
       ],
-      "result": "Espada do Espírito",
+      "result": "Vai-te Satanás",
       "tier": 9
     },
     {
       "id": 13,
       "combo": [
-        "Espada do Espírito",
-        "Satanás"
-      ],
-      "result": "Vai-te Satanás",
-      "tier": 10
-    },
-    {
-      "id": 14,
-      "combo": [
         "Vai-te Satanás",
-        "Somente a Deus servirás"
+        "Chegada dos Anjos"
       ],
       "result": "Vitória sobre Satanás",
       "tier": 11

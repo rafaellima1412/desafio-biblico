@@ -2,31 +2,37 @@
   "trilhas": [
     {
       "id": "tentacao",
-      "nome": "Mateus 4 — A Tentação de Jesus",
+      "nome": "Mateus 4: A Tentação de Jesus",
       "elementos": [
-        "Jesus",
-        "Pedras",
-        "Pão",
-        "Palavra",
-        "Templo",
-        "Anjos",
-        "Montanha",
-        "Reinos",
-        "Adoração",
-        "Serviço",
-        "Deserto",
-        "Jejum",
-        "Satanás",
+        "Tentação",
+        "40 Dias e 40 Noites",
         "Fome",
-        "Tentação de Jesus",
-        "Tentação do Pão",
+        "Tentação dos Pães",
         "Nem só de pão viverá o homem",
-        "Não tentarás o Senhor teu Deus",
-        "Glória dos Reinos do Mundo",
+        "Tentação na Palavra",
+        "Pináculo",
         "Tentação de Poder",
+        "Não tentarás o Senhor teu Deus",
+        "Tentação dos Reinos",
         "Somente a Deus servirás",
+        "Vai-te Satanás",
         "Vitória sobre Satanás"
-      ]
+      ],
+      "dicas": {
+        "Tentação": "Mt 4:1",
+        "40 Dias e 40 Noites": "Mt 4:2",
+        "Fome": "Mt 4:2",
+        "Tentação dos Pães": "Mt 4:3",
+        "Nem só de pão viverá o homem": "Mt 4:4",
+        "Pináculo": "Mt 4:5",
+        "Tentação na Palavra": "Mt 4:6",
+        "Tentação de Poder": "Mt 4:6",
+        "Não tentarás o Senhor teu Deus": "Mt 4:7",
+        "Tentação dos Reinos": "Mt 4:8",
+        "Somente a Deus servirás": "Mt 4:10",
+        "Vai-te Satanás": "Mt 4:10",
+        "Vitória sobre Satanás": "Mt 4:11"
+      }
     }
   ]
 }

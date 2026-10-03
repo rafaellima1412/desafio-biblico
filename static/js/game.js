@@ -86,10 +86,8 @@ $("#btn-combinar").addEventListener("click", async () => {
     el.className = "falha";
   } else {
     if (data.novo) {
-      const slug = data.raridade
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, ""); // remove acentos só pra formar a classe CSS
+      // data.raridade = nome exibido (ex: "Leitor da Bíblia")
+      // data.raridade_id = id usado na classe CSS (ex: "comum")
       el.innerHTML = `✨ Descoberta! ${a} + ${b} = <strong>${data.result}</strong> ` +
         `<span class="badge-raridade raridade-${data.raridade_id}">${data.raridade}</span> ` +
         `(+${data.pontos_ganhos} pontos)`;
@@ -190,6 +188,16 @@ async function renderizarTrilha(trilhaId) {
     label.textContent = item.nome;
     step.appendChild(circulo);
     step.appendChild(label);
+    // dica (referência bíblica): o servidor só envia para itens não descobertos
+    if (item.dica) {
+      const dica = document.createElement("small");
+      dica.className = "trilha-dica hidden"; // começa escondida
+      dica.textContent = item.dica;
+      step.appendChild(dica);
+      step.title = "Toque para ver a dica";
+      // tocar no passo mostra a dica; tocar de novo esconde
+      step.addEventListener("click", () => dica.classList.toggle("hidden"));
+    }
     path.appendChild(step);
   });
 }

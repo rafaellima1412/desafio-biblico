@@ -11,6 +11,7 @@ use std::sync::{Arc, Mutex};
 use tower_http::services::ServeDir;
 
 mod templates;
+mod validacao;
 use templates::{IndexTemplate, TelaoTemplate};
 
 // ---- Limites de proteção (jogo exposto na internet via DDNS) ----
@@ -24,8 +25,7 @@ const MAX_BODY_BYTES: usize = 4 * 1024;
 // combos.json usa array [a, b]; fazemos a conversão manual no load.
 #[derive(Debug, Deserialize)]
 struct RawComboEntry {
-    #[allow(dead_code)]
-    id: u32,
+    id: u32, // usado pelo validador nas mensagens de erro
     combo: [String; 2],
     result: String,
     tier: u32,
@@ -37,6 +37,11 @@ struct ComboFile {
     combinacoes: Vec<RawComboEntry>,
 }
 
+// resultado -> todas as receitas (pares de ingredientes) que o produzem.
+// Vec em vez de um único par: se um elemento tiver mais de uma receita,
+// nenhuma é descartada no cálculo da base de cada trilha.
+type ReceitasPorResultado = HashMap<String, Vec<(String, String)>>;
+
 #[derive(Debug, Clone, Deserialize, Serialize)]
 struct Trilha {
     id: String,
@@ -47,6 +52,11 @@ struct Trilha {
     // filtrar o painel de inventário e não poluir a tela com base de outros arcos)
     #[serde(default)]
     elementos_base_relacionados: Vec<String>,
+    // referência bíblica por elemento (opcional no trilhas.json).
+    // Não vai no /api/trilhas: só é enviada no /api/progresso, e apenas
+    // para elementos que o jogador ainda não descobriu.
+    #[serde(default, skip_serializing)]
+    dicas: HashMap<String, String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -63,26 +73,36 @@ fn load_trilhas() -> Vec<Trilha> {
 
 // Percorre a árvore de combinações de trás pra frente a partir de um elemento
 // até encontrar todos os elementos base necessários pra alcançá-lo.
-fn coletar_base_ancestral(
-    elemento: &str,
-    combo_by_result: &HashMap<String, (String, String)>,
+// Versão ITERATIVA com conjunto de visitados: mesmo que um ciclo escape da
+// validação, a função termina e não estoura a pilha.
+fn coletar_base_ancestral<'a>(
+    elemento: &'a str,
+    combo_by_result: &'a ReceitasPorResultado,
     base_set: &HashSet<String>,
     out: &mut HashSet<String>,
 ) {
-    if base_set.contains(elemento) {
-        out.insert(elemento.to_string());
-        return;
+    let mut visitados: HashSet<&str> = HashSet::new();
+    let mut pilha: Vec<&str> = vec![elemento];
+    while let Some(atual) = pilha.pop() {
+        if !visitados.insert(atual) {
+            continue; // já passou por aqui: ciclo ou ramo repetido
+        }
+        if base_set.contains(atual) {
+            out.insert(atual.to_string());
+            continue;
+        }
+        if let Some(receitas) = combo_by_result.get(atual) {
+            for (a, b) in receitas {
+                pilha.push(a.as_str());
+                pilha.push(b.as_str());
+            }
+        }
     }
-    if let Some((a, b)) = combo_by_result.get(elemento) {
-        coletar_base_ancestral(a, combo_by_result, base_set, out);
-        coletar_base_ancestral(b, combo_by_result, base_set, out);
-    }
-    // elemento desconhecido (não deveria acontecer se os dados passaram na auditoria)
 }
 
 fn calcular_base_de_cada_trilha(
     trilhas: &mut [Trilha],
-    combo_by_result: &HashMap<String, (String, String)>,
+    combo_by_result: &ReceitasPorResultado,
     elementos_base: &[String],
 ) {
     let base_set: HashSet<String> = elementos_base.iter().cloned().collect();
@@ -136,38 +156,77 @@ fn validar_nome(raw: &str) -> Option<String> {
     }
 }
 
-fn load_combos() -> (
-    HashMap<String, (String, u32)>,
-    HashMap<String, (String, String)>,
-    Vec<String>,
-) {
+// Passo 1: só lê e faz o parse, sem converter nada (pra poder validar antes).
+fn ler_combo_file() -> ComboFile {
     let raw =
         std::fs::read_to_string("data/combos.json").expect("não consegui ler data/combos.json");
-    let parsed: ComboFile = serde_json::from_str(&raw).expect("JSON inválido em combos.json");
+    serde_json::from_str(&raw).expect("JSON inválido em combos.json")
+}
 
+// Passo 2 (depois da validação): monta as estruturas usadas pelo jogo.
+fn montar_mapas(
+    parsed: ComboFile,
+) -> (
+    HashMap<String, (String, u32)>,
+    ReceitasPorResultado,
+    Vec<String>,
+) {
     let mut lookup = HashMap::new();
-    let mut combo_by_result = HashMap::new();
+    let mut combo_by_result: ReceitasPorResultado = HashMap::new();
     for entry in parsed.combinacoes {
         let key = normalize_key(&entry.combo[0], &entry.combo[1]);
         lookup.insert(key, (entry.result.clone(), entry.tier));
-        combo_by_result.insert(
-            entry.result,
-            (entry.combo[0].clone(), entry.combo[1].clone()),
-        );
+        let [a, b] = entry.combo;
+        combo_by_result
+            .entry(entry.result)
+            .or_default()
+            .push((a, b));
     }
     (lookup, combo_by_result, parsed.elementos_base)
 }
 
 // Quanto mais alto o tier (mais "profunda" a combinação na árvore),
 // mais rara e mais pontos vale a descoberta.
-fn raridade_info(tier: u32) -> (&'static str, &'static str, u32) {
+// Struct com campos nomeados em vez de tupla: impede trocar id e nome de
+// lugar sem perceber (os dois são &str e o compilador não pegaria).
+struct Raridade {
+    id: &'static str,   // usado como classe CSS no front (raridade-<id>)
+    nome: &'static str, // texto exibido no badge
+    pontos: u32,
+}
+
+fn raridade_info(tier: u32) -> Raridade {
     match tier {
-        0..=2 => ("comum", "Leitor da Bíblia", 10),
-        3..=4 => ("incomum", "Aprendiz de Profeta", 20),
-        5..=6 => ("raro", "Carruagem de Fogo", 35),
-        7..=8 => ("epico", "Matador de Gigante", 50),
-        9..=10 => ("lendario", "Labareda de Fogo", 75),
-        _ => ("mitico", "Manto da Revelação", 100),
+        0..=2 => Raridade {
+            id: "comum",
+            nome: "Leitor da Bíblia",
+            pontos: 10,
+        },
+        3..=4 => Raridade {
+            id: "incomum",
+            nome: "Aprendiz de Profeta",
+            pontos: 20,
+        },
+        5..=6 => Raridade {
+            id: "raro",
+            nome: "FireGod",
+            pontos: 35,
+        },
+        7..=8 => Raridade {
+            id: "epico",
+            nome: "Matador de Gigante",
+            pontos: 50,
+        },
+        9..=10 => Raridade {
+            id: "lendario",
+            nome: "Labareda de Fogo",
+            pontos: 75,
+        },
+        _ => Raridade {
+            id: "mitico",
+            nome: "Manto da Revelação",
+            pontos: 100,
+        },
     }
 }
 
@@ -184,7 +243,8 @@ struct CombineResponse {
     result: Option<String>,
     novo: bool, // true se o jogador nunca tinha descoberto esse elemento
     tier: Option<u32>,
-    raridade: Option<&'static str>,
+    raridade: Option<&'static str>,    // nome exibido no badge
+    raridade_id: Option<&'static str>, // classe CSS do badge
     pontos_ganhos: u32, // pontos ganhos NESTA combinação (0 se já tinha ou se falhou)
     pontos: u32,        // total acumulado do jogador
 }
@@ -196,6 +256,7 @@ fn combine_falha() -> CombineResponse {
         novo: false,
         tier: None,
         raridade: None,
+        raridade_id: None,
         pontos_ganhos: 0,
         pontos: 0,
     }
@@ -214,7 +275,7 @@ async fn combine(State(state): State<Arc<AppState>>, Json(req): Json<CombineRequ
         return Json(combine_falha()).into_response();
     };
 
-    let (_alias, raridade, pontos_por_raridade) = raridade_info(tier);
+    let rar = raridade_info(tier);
 
     let mut players = state.players.lock().unwrap();
 
@@ -226,7 +287,7 @@ async fn combine(State(state): State<Arc<AppState>>, Json(req): Json<CombineRequ
     let discovered = players.entry(player.clone()).or_default();
     let novo = discovered.insert(result.clone());
 
-    let pontos_ganhos = if novo { pontos_por_raridade } else { 0 };
+    let pontos_ganhos = if novo { rar.pontos } else { 0 };
     if novo {
         let mut scores = state.scores.lock().unwrap();
         *scores.entry(player.clone()).or_insert(0) += pontos_ganhos;
@@ -238,7 +299,8 @@ async fn combine(State(state): State<Arc<AppState>>, Json(req): Json<CombineRequ
         result: Some(result),
         novo,
         tier: Some(tier),
-        raridade: Some(raridade),
+        raridade: Some(rar.nome),
+        raridade_id: Some(rar.id),
         pontos_ganhos,
         pontos: total,
     })
@@ -309,6 +371,9 @@ async fn inventario(
 struct TrilhaProgressoItem {
     nome: String,
     descoberto: bool,
+    // referência bíblica, só para elementos ainda não descobertos
+    #[serde(skip_serializing_if = "Option::is_none")]
+    dica: Option<String>,
 }
 
 #[derive(Serialize)]
@@ -335,11 +400,18 @@ async fn progresso(
             let itens: Vec<TrilhaProgressoItem> = t
                 .elementos
                 .iter()
-                .map(|el| TrilhaProgressoItem {
-                    nome: el.clone(),
-                    // elemento base também conta como "sempre disponível", mas
-                    // o que marca progresso de verdade é ter sido descoberto por combinação
-                    descoberto: descobertos_do_jogador.contains(el),
+                .map(|el| {
+                    // o que marca progresso é ter sido descoberto por combinação
+                    let descoberto = descobertos_do_jogador.contains(el);
+                    TrilhaProgressoItem {
+                        nome: el.clone(),
+                        descoberto,
+                        dica: if descoberto {
+                            None
+                        } else {
+                            t.dicas.get(el).cloned()
+                        },
+                    }
                 })
                 .collect();
             let descobertos = itens.iter().filter(|i| i.descoberto).count();
@@ -360,8 +432,22 @@ async fn progresso(
 async fn main() {
     tracing_subscriber::fmt::init();
 
-    let (lookup, combo_by_result, elementos_base) = load_combos();
+    // 1) Lê os dados sem converter
+    let combo_file = ler_combo_file();
     let mut trilhas = load_trilhas();
+
+    // 2) Valida antes de montar qualquer estrutura: JSON com ciclo, ingrediente
+    //    órfão, par repetido ou trilha inalcançável impede o servidor de subir.
+    if let Err(erros) = validacao::validar(&combo_file, &trilhas) {
+        eprintln!("Dados inválidos em data/combos.json / data/trilhas.json:");
+        for e in &erros {
+            eprintln!("  - {e}");
+        }
+        std::process::exit(1);
+    }
+
+    // 3) Só agora monta os mapas usados pelo jogo
+    let (lookup, combo_by_result, elementos_base) = montar_mapas(combo_file);
     calcular_base_de_cada_trilha(&mut trilhas, &combo_by_result, &elementos_base);
     tracing::info!(
         "Carregadas {} combinações e {} trilhas",
